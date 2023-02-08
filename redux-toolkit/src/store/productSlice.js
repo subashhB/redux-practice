@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-const STATUS = Object.freeze({
+export const STATUS = Object.freeze({
     IDLE: 'idle',
     ERROR: 'error',
     LOADING: 'loading'
@@ -15,18 +15,20 @@ const productSlice = createSlice({
             state.data = action.payload
         },
         setStatus(state, action){
-            state.status = STATUS.IDLE
+            state.status = action.payload
         }
     }
 })
 
-export const {setProducts, setStatus} = productSlice.actionstion
+export const {setProducts, setStatus} = productSlice.actions
 export default productSlice.reducer
 
+//Thunk
 export function fetchProducts(){
     return async function fetchProductsThunk(dispatch, getState){
         dispatch(setStatus(STATUS.LOADING))
         try{
+            //You cannot call the asynchronous calls from the reducers so we have to use the thunk middleware
             const res = await fetch('https://fakestoreapi.com/products')
             const data = await res.json();
             dispatch(setProducts(data));
